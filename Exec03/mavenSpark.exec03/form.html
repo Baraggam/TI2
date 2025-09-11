@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Gerenciamento da Tabela Jogos</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+			font-size: 15px;
+		}
+
+		.container {
+			display: flex;
+			gap: 32px;
+		}
+
+		.left-panel {
+			width: 320px;
+			min-width: 260px;
+		}
+
+		.right-panel {
+			flex: 1;
+		}
+
+		form {
+			margin-bottom: 18px;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			background: #f9f9f9;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 6px;
+			font-size: 14px;
+		}
+
+		input[type="text"],
+		input[type="date"] {
+			width: 95%;
+			padding: 4px;
+			margin-bottom: 8px;
+			font-size: 14px;
+		}
+
+		button {
+			padding: 6px 12px;
+			font-size: 14px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		.btn-inserir {
+			background-color: #4CAF50;
+			color: white;
+		}
+
+		.btn-deletar {
+			background-color: #f44336;
+			color: white;
+		}
+
+		.btn-atualizar {
+			background-color: #2196F3;
+			color: white;
+		}
+
+		h1 {
+			font-size: 22px;
+			margin-bottom: 18px;
+		}
+
+		h2 {
+			font-size: 18px;
+			margin-bottom: 10px;
+		}
+
+		.jogos-table {
+			width: 100%;
+			border-collapse: collapse;
+			background: #fff;
+		}
+
+		.jogos-table th,
+		.jogos-table td {
+			border: 1px solid #ccc;
+			padding: 8px;
+			text-align: left;
+		}
+
+		.jogos-table th {
+			background: #eee;
+		}
+
+		.action-btns {
+			display: flex;
+			gap: 8px;
+		}
+	</style>
+	<script>
+		function deletarJogo(id) {
+			if (confirm("Deseja realmente deletar o jogo ID " + id + "?")) {
+				const form = document.createElement('form');
+				form.method = 'post';
+				form.action = '/deletar';
+				const input = document.createElement('input');
+				input.type = 'hidden';
+				input.name = 'id';
+				input.value = id;
+				form.appendChild(input);
+				document.body.appendChild(form);
+				form.submit();
+			}
+		}
+
+		function atualizarJogo(id) {
+			// Remove qualquer formulário de atualização aberto
+			const oldForm = document.getElementById('update-form-' + id);
+			if (oldForm) oldForm.remove();
+
+			// Cria o formulário de atualização
+			const form = document.createElement('form');
+			form.method = 'post';
+			form.action = '/atualizar';
+			form.id = 'update-form-' + id;
+			form.style.display = 'inline-block';
+			form.style.marginLeft = '8px';
+
+			const inputId = document.createElement('input');
+			inputId.type = 'hidden';
+			inputId.name = 'id';
+			inputId.value = id;
+			form.appendChild(inputId);
+
+			const inputData = document.createElement('input');
+			inputData.type = 'date';
+			inputData.name = 'dataLancamento';
+			inputData.required = true;
+			form.appendChild(inputData);
+
+			const btn = document.createElement('button');
+			btn.type = 'submit';
+			btn.className = 'btn-atualizar';
+			btn.textContent = 'Salvar';
+			form.appendChild(btn);
+
+			// Adiciona o formulário ao lado do botão clicado
+			const btnAtualizar = event.target;
+			btnAtualizar.parentNode.appendChild(form);
+		}
+	</script>
+</head>
+
+<body>
+	<h1>Gerenciamento da Tabela Jogos</h1>
+	<div class="container">
+		<div class="left-panel">
+			<!-- Inserir jogo -->
+			<form action="/inserir" method="post">
+				<h2>Adicionar Novo Jogo</h2>
+				<label for="inserir-nome">Nome:</label>
+				<input type="text" id="inserir-nome" name="nome" required>
+				<label for="inserir-data">Data de Lançamento:</label>
+				<input type="date" id="inserir-data" name="dataLancamento" required>
+				<br>
+				<button type="submit" class="btn-inserir">Inserir</button>
+			</form>
+		</div>
+		<div class="right-panel">
+			<h2>Jogos Cadastrados</h2>
+			<!-- Conteúdo dinâmico dos jogos -->
+			<LISTAR-JOGO>
+		</div>
+	</div>
+</body>
+
+</html>
